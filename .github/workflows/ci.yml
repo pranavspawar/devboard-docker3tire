@@ -24,8 +24,8 @@ jobs:
         
         - name : install dependencies
           run : npm install
-          
+          working-directory: frontend
 
         - name: Execute ESLint Verification
           run: npm run lint
-          
+          working-directory: frontend
