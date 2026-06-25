@@ -23,7 +23,7 @@ jobs:
             cashe-dependency-path: frontend/package-lock.json
         
         - name : install dependencies
-          run : npm install --save-dev eslint
+          run : npm install
           working-directory: frontend
 
         - name: Execute ESLint Verification
