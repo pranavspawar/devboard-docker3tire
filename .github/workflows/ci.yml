@@ -1,7 +1,7 @@
 # this code create on vs studio 
 name: ci-pipeline
 
-on:
+on :
   push:
     branches:
       - main
