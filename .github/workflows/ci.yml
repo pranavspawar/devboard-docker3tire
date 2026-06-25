@@ -1,0 +1,12 @@
+name:ci-pipeline
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - name : clone git code 
+        - uses: actions/checkout@v2
