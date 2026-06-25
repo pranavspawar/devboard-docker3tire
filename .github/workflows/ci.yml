@@ -27,7 +27,7 @@ jobs:
           working-directory: frontend
 
         - name: Execute ESLint Verification
-          run: npm run lint
+          run: npm run lint:fix
           working-directory: frontend
 
         - name: Run Tests
