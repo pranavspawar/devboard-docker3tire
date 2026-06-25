@@ -7,7 +7,7 @@ name: ci-pipeline
 on :
   push:
     branches:
-      - main
+      - advanced
 jobs:
     frontend:
         runs-on: ubuntu-latest
