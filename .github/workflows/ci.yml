@@ -50,7 +50,7 @@ jobs:
         - name : build and push docker images
           uses: docker/build-push-action@v7
           with:
-            contect: ./frontend
+            context: ./frontend
             push: true
             tags: devopsengineerpranav/devboard-fe:latest
        
