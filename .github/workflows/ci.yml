@@ -71,7 +71,7 @@ jobs:
           - name: Run golangci-lint
             uses: golangci/golangci-lint-action@v6 
             with :
-              version : v1.58 
+              version : latest
            
           - name: run tests
             run : go test
@@ -89,4 +89,4 @@ jobs:
             with :
               context: ./backend
               push: true
-              tages: ${{ vars.DOCKERHUB_USERNAME }}/devboard-be:latest
+              tags: ${{ vars.DOCKERHUB_USERNAME }}/devboard-be:latest
