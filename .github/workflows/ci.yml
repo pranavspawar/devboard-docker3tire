@@ -44,8 +44,8 @@ jobs:
           run: echo "Username=${{ vars.DOCKERHUB_USERNAME }}"
         
 
-        - name : setup docker buildx
-          uses: docker/setup-buildx-action@v4
+#        - name : setup docker buildx
+#          uses: docker/setup-buildx-action@v4
         
         - name : build and push docker images
           uses: docker/build-push-action@v7
