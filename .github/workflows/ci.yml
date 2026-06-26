@@ -39,6 +39,9 @@ jobs:
           with:
             username: ${{ vars.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: Check Docker username
+          run: echo "Username=${{ vars.DOCKERHUB_USERNAME }}"
         
 
         - name : setup docker buildx
