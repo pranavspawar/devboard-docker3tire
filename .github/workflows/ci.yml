@@ -53,4 +53,42 @@ jobs:
             context: ./frontend
             push: true
             tags: devopsengineerpranav/devboard-fe:latest
-       
+               
+      backend:
+        runs-on: ubuntu-latest
+        steps:
+          - name:  git code clone 
+            uses: actions/checkout@v2
+
+          - name : setup go
+            uses: actions/setup-go@v5
+            with:
+              go-version: "1.22"     # check this version when you get error 
+              go-version-file: 'go.mod'
+              cache: true
+              cache-dependency-path: backend/go.sum 
+
+          - name: Run golangci-lint
+            uses: golangci/golangci-lint-action@v6 
+            with :
+              version : v1.58 
+           
+          - name: run tests
+            run : go test
+            with:
+              working-directory: backend
+
+          - name : docker setup [login]
+            uses : docker/login-action@v4
+            with:
+              username: ${{ vars.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+          - name : build and push docker images
+            uses: docker/build-push-action@v7
+            with :
+              context: ./backend
+              push: true
+              tages: ${{ vars.DOCKERHUB_USERNAME }}/devboard-be:latest
+              
