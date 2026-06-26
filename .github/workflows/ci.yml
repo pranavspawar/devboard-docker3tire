@@ -54,7 +54,7 @@ jobs:
             push: true
             tags: devopsengineerpranav/devboard-fe:latest
                
-      backend:
+    backend:
         runs-on: ubuntu-latest
         steps:
           - name:  git code clone 
@@ -91,4 +91,3 @@ jobs:
               context: ./backend
               push: true
               tages: ${{ vars.DOCKERHUB_USERNAME }}/devboard-be:latest
-              
