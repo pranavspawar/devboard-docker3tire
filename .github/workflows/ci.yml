@@ -49,5 +49,5 @@ jobs:
           with:
             contect: ./frontend
             push: true
-            tags: ${{ vars.DOCKER_USERNAME }}/docker-frontend:latest
+            tags: ${{ vars.DOCKERHUB_USERNAME }}/docker-frontend:latest
        
