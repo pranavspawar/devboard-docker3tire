@@ -1,35 +1,44 @@
-# ─────────────────────────────────────────────────────────────────────────
-# DevBoard environment variables — TEMPLATE
-#
-# Copy this file to `.env` (or run `make setup`) and adjust as needed:
-#
-#     cp .env.example .env
-#
-# Docker Compose loads `.env` automatically and substitutes the ${VAR}
-# placeholders in docker-compose.yml — so this file is the single source of
-# truth for what gets injected into the db and the backend.
-#
-# `.env` is gitignored (it can hold real secrets in a real project); this
-# committed `.env.example` documents which variables exist. The values below
-# are safe local demo defaults.
-# ─────────────────────────────────────────────────────────────────────────
 
-# --- Postgres ---
-# Injected into the postgres container, and reused to build the backend's
-# POSTGRES_URL (see docker-compose.yml) so the credentials live in one place.
-POSTGRES_USER=devboard
-POSTGRES_PASSWORD=devboard
-POSTGRES_DB=devboard
 
-# --- Backend (Go API) ---
-# Port the Go app listens on INSIDE its container.
-# NOTE: if you change this, also update the proxy target in
-# frontend/vite.config.js (it points at http://backend:8080), or the frontend
-# won't find the backend.
-BACKEND_PORT=8080
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init/postgres:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    ports:
+      - "${POSTGRES_HOST_PORT}:5432"
 
-# --- Host port mappings (the host side of host:container) ---
-# Change these if a port is already taken on your machine.
-POSTGRES_HOST_PORT=5432
-BACKEND_HOST_PORT=8081
-FRONTEND_HOST_PORT=8080
+  backend:
+    # build = local; image = the tag CI pushes and CD pulls (IMAGE_TAG, else latest).
+    build: ./backend
+    image: trainwithshubham/devboard-backend:${IMAGE_TAG:-latest}
+    environment:
+      PORT: "${BACKEND_PORT}"
+      # Built from the Postgres vars above so the credentials live in one place.
+      POSTGRES_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_HOST_PORT}:${BACKEND_PORT}"   # host:container — direct curl/debug; the UI uses the gateway
+
+  frontend:
+    build: ./frontend
+    image: trainwithshubham/devboard-frontend:${IMAGE_TAG:-latest}
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_HOST_PORT}:4173"   # vite preview serves on 4173 inside the container
+
+volumes:
+  pgdata:
