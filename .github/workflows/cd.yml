@@ -1,9 +1,7 @@
 name : cd-pipeline
 
 on:
-    push:
-        branches:
-            -advanced
+   workflow_call:
 
 jobs:
     deploy:
