@@ -16,5 +16,5 @@ RUN CGO_ENABLED=0 go build -o devboard-backend .
 RUN adduser -D -u 10001 app && chown -R app:app /app
 USER app
 
-EXPOSE 8081
-ENTRYPOINT ["./devboard-be"]
+EXPOSE 8080
+ENTRYPOINT ["./devboard-backend"]
