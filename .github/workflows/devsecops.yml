@@ -3,7 +3,7 @@ name : devsecops-check
 on :
     push:
         branches:
-            - master
+            - feat/matrix-docker-build
 
 jobs :
     code-quality:
