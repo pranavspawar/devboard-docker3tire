@@ -7,7 +7,7 @@ jobs:
     deploy:
         runs-on: Self-hosted
         steps:
-          - name: clone git code
+          - name: clone git code  
             uses: actions/checkout@v7
 
           - name: Copy Example Env to main env
