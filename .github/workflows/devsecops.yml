@@ -11,3 +11,6 @@ jobs :
     
     secrate-scan:
         uses: ./.github/workflows/secrate-scan.yml
+
+    dependency-scan:
+        uses: ./.github/workflows/dependancy-scan.yml
