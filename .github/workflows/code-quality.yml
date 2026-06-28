@@ -1,0 +1,52 @@
+# This is a GitHub Actions workflow file for code quality checks, 
+#including SAST (Static Application Security Testing) for both frontend and backend code. 
+#It defines a workflow that can be called by other workflows.
+name : code-quality-SAST
+
+on :
+    workflow_call:
+         
+
+jobs:
+    code-quality-check:
+        runs-on: ubuntu-latest
+        steps:
+         -  name : clone git code
+            uses: actions/checkout@v7
+          
+         -  name : setup nodeJs
+            uses: actions/setup-node@v6
+            with:
+              node-version: '20'
+              cache: 'npm'
+              cache-dependency-path: frontend/package-lock.json
+        
+         -  name : install dependencies
+            run : npm install
+            working-directory: frontend
+
+         -  name: Execute ESLint Verification
+            run: npm run lint:fix
+            working-directory: frontend
+
+         - name: Run Tests
+           run: npm run test 
+           working-directory: frontend         
+
+         - name : setup go
+           uses: actions/setup-go@v5
+           with:
+              go-version: "1.22"     # check this version when you get error 
+              go-version-file: 'go.mod'
+              cache: true
+              cache-dependency-path: backend/go.sum 
+
+         - name: Run golangci-lint
+           uses: golangci/golangci-lint-action@v6 
+           with :
+              version : latest
+              working-directory: backend
+           
+         - name: run tests
+           run : go test
+           working-directory: backend
