@@ -62,3 +62,7 @@ jobs:
               with:
                  name: govulncheck-report
                  path: ./backend/govulncheck-report.txt
+
+                 # for check  vernability is skip for now 
+           -  name : test golang ignore vernability
+              run : echo "All vernability test are skip for now"
