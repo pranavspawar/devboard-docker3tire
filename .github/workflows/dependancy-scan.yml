@@ -18,10 +18,10 @@ jobs:
                 cache : 'npm'
                 cache-dependency-path: frontend/package-lock.json
 
-           - name: Install Dependencies
-             run: npm ci 
+           - name : install dependencies
+             run : npm install
+             working-directory: frontend
 
-        
            - name : Run npm audit 
              id : npm-audit
              continue-on-error: true      
@@ -36,7 +36,7 @@ jobs:
               retention-days: 14
 
            - name: Enforce Pipeline Failure If Vulnerabilities Exist
-             if: steps.run-audit.outcome == 'failure'
+             if: steps.npm-audit.outcome == 'failure'
              run: |
               echo "::error::npm audit identified vulnerabilities! Please review the uploaded report."
               exit 1
