@@ -53,10 +53,11 @@ jobs:
              run: go install golang.org/x/vuln/cmd/govulncheck@latest
 
            - name: Scan Dependencies
-             run: govulncheck -show verbose ./... > govulncheck-report.txt
+             run: govulncheck -show verbose ./... > govulncheck-report.txt 
              working-directory: backend
             
            -  name: Upload govulncheck Report Artifact
+              if: always()
               uses: actions/upload-artifact@v4
               with:
                  name: govulncheck-report
