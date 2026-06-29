@@ -19,8 +19,23 @@ jobs:
                 cache-dependency-path: frontend/package-lock.json
         
            - name : Run npm audit 
-             run: npm audit          # run: npm audit --audit-level=high # Fails the build only for 'high' or 'critical' flaws
+             id : npm-audit
+             run: npm audit --json > npm-audit-report.json       # run: npm audit --audit-level=high # Fails the build only for 'high' or 'critical' flaws
+             continue-on-error: true      
              working-directory: frontend
+            
+           - name: Upload Audit Report Artifact
+             uses: actions/upload-artifact@v4
+             with:
+              name: npm-security-report
+              path: npm-audit-report.json
+              retention-days: 14
+
+           - name: Enforce Pipeline Failure If Vulnerabilities Exist
+             if: steps.run-audit.outcome == 'failure'
+             run: |
+              echo "::error::npm audit identified vulnerabilities! Please review the uploaded report."
+              exit 1
 
            - name : setup go
              uses: actions/setup-go@v5
