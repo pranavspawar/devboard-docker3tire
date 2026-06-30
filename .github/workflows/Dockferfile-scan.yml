@@ -8,7 +8,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
                 matrix:
-                    path: ['frontend/Dockerfile', 'backend/Dockerfile']
+                    path: ['frontend', 'backend']
     
         steps:
          - name: code checkout
@@ -17,5 +17,4 @@ jobs:
          - name: Lint Dockerfile
            uses: hadolint/hadolint-action@v3.1.0
            with:
-             working-directory: ${{ matrix.path }}
-             
+             working-directory: ${{ matrix.path }}/Dockerfile
