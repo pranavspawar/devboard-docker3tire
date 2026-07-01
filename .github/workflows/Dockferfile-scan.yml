@@ -25,7 +25,7 @@ jobs:
                 username: ${{ vars.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-            - name: Build docker image for scanning
+            - name: Docker Build ${{ matrix.folders}}
               run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}:latest .
               working-directory: ${{ matrix.folders}}
 
