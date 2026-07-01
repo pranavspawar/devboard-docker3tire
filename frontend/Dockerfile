@@ -1,16 +1,16 @@
-# Stage 1 — build the app into static files
-FROM node:20-alpine AS build
+#syntax=docker/dockerfile:1
+
+# Stage 1 — build the app into static files with DHI
+FROM dhi.io/node:22-alpine3.24-dev AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build
 
-# Stage 2 — small image that only serves the build (no nginx)
-FROM node:20-alpine
-WORKDIR /app
-RUN npm install -g vite@5 && npm cache clean --force
-COPY --from=build /app/dist ./dist
-COPY vite.preview.config.js ./vite.config.js
+# Stage 2 — serve static files with lightweight DHI Nginx
+FROM dhi.io/nginx:1.31.2-alpine3.24
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 4173
-CMD ["vite", "preview", "--host", "0.0.0.0", "--port", "4173"]
+CMD ["nginx", "-g", "daemon off;"]
