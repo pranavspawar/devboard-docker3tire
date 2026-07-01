@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Update OS packages to latest patches
 RUN apk update && apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates tzdata
+    apk add --no-cache ca-certificates=20260413-r0 tzdata=2026b-r0
 
 # Copy dependency files
 COPY go.mod go.sum ./
@@ -30,7 +30,7 @@ FROM alpine:3.21
 
 # Update packages and add minimal runtime dependencies
 RUN apk update && apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates tzdata && \
+    apk add --no-cache ca-certificates=20260413-r0 tzdata=2026b-r0 && \
     apk del apk-tools && \
     rm -rf /var/cache/apk/* /var/lib/apk/lists/*
 
