@@ -1,18 +1,45 @@
-FROM golang:1.22-alpine
+
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
-# Download deps first for better layer caching.
+# Update OS packages
+RUN apk update && apk upgrade --no-cache
+
+# Copy dependency files
 COPY go.mod go.sum ./
+
+# Download dependencies
 RUN go mod download
 
-# Build the binary.
+# Copy source code
 COPY . .
-RUN CGO_ENABLED=0 go build -o devboard-backend .
 
-# Run as a non-root user.
-RUN adduser -D -u 10001 app && chown -R app:app /app
+# Build static binary
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -trimpath -ldflags="-s -w" \
+    -o devboard-backend .
+
+# -------------------------
+# Runtime Stage
+# -------------------------
+FROM alpine:latest
+
+# Update packages
+RUN apk update && apk upgrade --no-cache
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -S app && \
+    adduser -S -G app -u 10001 app
+
+# Copy binary
+COPY --from=builder /app/devboard-backend .
+
+# Use non-root user
 USER app
 
 EXPOSE 8080
+
 ENTRYPOINT ["./devboard-backend"]
