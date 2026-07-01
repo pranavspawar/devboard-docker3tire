@@ -9,16 +9,14 @@ RUN apk update && apk upgrade --no-cache && \
     apk add --no-cache ca-certificates=20260413-r0 tzdata=2026b-r0
 
 # Copy dependency files
-COPY go.mod go.sum ./
-
-# Download dependencies with verification
-RUN go mod download && go mod verify
+COPY go.mod ./
 
 # Copy source code
 COPY . .
 
 # Build static binary with hardening flags
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+RUN go mod download && go mod tidy && go mod verify && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -trimpath \
     -ldflags="-s -w -X main.Version=$(git describe --tags --always --dirty 2>/dev/null || echo 'unknown')" \
     -o devboard-backend .
