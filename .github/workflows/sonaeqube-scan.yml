@@ -1,0 +1,18 @@
+name : soanrqube-scan
+
+on : 
+    workflow_call:
+
+jobs:
+    sonarqube-scan:
+        runs-on: ubuntu-latest
+        steps:
+          - name : clone git code
+            uses: actions/checkout@v7
+
+          - name: SonarQube Scan
+            uses: SonarSource/sonarqube-scan-action@v5
+            env:
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+             
