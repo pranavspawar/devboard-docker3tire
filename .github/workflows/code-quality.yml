@@ -36,7 +36,7 @@ jobs:
          - name : setup go
            uses: actions/setup-go@v5
            with:
-              go-version: "1.23"     # check this version when you get error 
+              go-version: "1.22"     # check this version when you get error 
               go-version-file: 'go.mod'
               cache: true
               cache-dependency-path: backend/go.sum 
